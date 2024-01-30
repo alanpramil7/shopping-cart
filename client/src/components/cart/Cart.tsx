@@ -6,75 +6,46 @@ import Header from "../header/Header";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../hooks/auth-context";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
-  const { authState } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [cartProduct, setCartProduct] = useState<ProductType[]>([]);
   const [cartData, setCartData] = useState<CartProps>({});
+  const navigate = useNavigate();
 
-  const productIds: number[] = Object.values(cartData).map(
-    (item: any) => item.productId
-  );
+  useEffect(() => {
+    const fetchCartAndProducts = async () => {
+      if (!user) return;
 
-  const fetchCart = async () => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5001/cart",
-        {
-          id: authState.user?.id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${authState.accesstoken}`,
-          },
+      try {
+        const cartResponse = await axios.post(
+          "http://localhost:5001/cart",
+          { id: user.id },
+          { withCredentials: true }
+        );
+        const cart = cartResponse.data;
+        setCartData(cart);
+
+        const productIds = Object.values(cart).map(
+          (item: any) => item.productId
+        );
+        if (productIds.length > 0) {
+          const productsResponse = await axios.post(
+            "http://localhost:5001/products/productbyids",
+            { ids: productIds },
+            { withCredentials: true }
+          );
+          setCartProduct(productsResponse.data);
         }
-      );
-
-      if (response.data) {
-        setCartData(response.data);
+      } catch (error) {
+        console.error("Error fetching cart or products:", error);
       }
-    } catch (error) {}
-  };
+    };
 
-  const handleIds = async (ids: string[]) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5001/products/productbyids",
-        { ids: Object.values(productIds) },
-        {
-          headers: {
-            Authorization: `Bearer ${authState.accesstoken}`,
-          },
-        }
-      );
+    fetchCartAndProducts();
+  }, [user]);
 
-      setCartProduct(response.data);
-    } catch (error) {
-      console.log("error in geting data by ids", error);
-    }
-  };
-
-  useEffect(() => {
-    if (authState.user) {
-      fetchCart();
-    }
-  }, [authState.user]);
-
-  useEffect(() => {
-    if (Object.keys(cartData).length > 0) {
-      const ids = Object.keys(cartData);
-
-      handleIds(ids);
-    }
-  }, [cartData]);
-
-  useEffect(() => {});
-
-  // const cartItems = Object.values(cart || {});
-  // const totalPrice = cartItems.reduce(
-  //   (acc, product) => acc + product.price * product.quantity,
-  //   0
-  // );
   const totalPrice = cartProduct.reduce((total, product) => {
     const quantity =
       Object.values(cartData).find((cart) => cart.productId === product.id)
@@ -91,16 +62,12 @@ const Cart = () => {
         `http://localhost:5001/cart/${productId}`,
         {
           operation,
-          id: authState.user?.id,
+          id: user?.id,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${authState.accesstoken}`,
-          },
-        }
+        { withCredentials: true }
       );
       if (response.status === 200) {
-        window.location.reload();
+        navigate(0);
       }
       console.log(response.data);
     } catch (error) {
@@ -126,7 +93,6 @@ const Cart = () => {
                   handleQuantityUpdate={handleQuantityUpdate}
                   productId={item.id}
                   quantity={quantity[0].quantity}
-                  handleRemoveProduct={() => {}}
                 />
               </div>
             );

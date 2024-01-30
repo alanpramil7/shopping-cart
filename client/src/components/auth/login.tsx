@@ -9,26 +9,28 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { setAuthState } = useContext(AuthContext);
+  const { setUser } = useContext(AuthContext);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5001/users/login", {
-        username,
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "http://localhost:5001/users/login",
+        {
+          username,
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
-      console.log("Access Token:", response.data.accesstoken);
       console.log("user", response.data.user);
 
       const { id, isAdmin } = response.data.user;
-      setAuthState({
-        accesstoken: response.data.accesstoken,
-        user: { id, isAdmin },
-      });
-      console.log(response.data);
+
+      setUser({ id, isAdmin });
 
       navigate("/");
     } catch (error) {

@@ -1,5 +1,5 @@
 import express from "express";
-import { authenticationToken } from "../middlewere/middlewere";
+import { cookieToken } from "../middlewere/middlewere";
 import Cart, { CartProps } from "../models/Cart";
 
 interface CartDataProps {
@@ -8,7 +8,7 @@ interface CartDataProps {
 
 const router = express.Router();
 
-router.use(authenticationToken);
+router.use(cookieToken);
 
 router.post("/add", async (req, res) => {
   const { userId, productId } = req.body;
@@ -28,23 +28,6 @@ router.post("/add", async (req, res) => {
     res.status(500).json({ message: "Error adding products to cart" });
   }
 });
-
-// I cant access user from middlewere
-// router.get("/", async (req, res) => {
-//   const userId = req.body.id;
-//   console.log(userId);
-//   try {
-//     const cartItems = await Cart.findAll({
-//       where: {
-//         userId,
-//       },
-//     });
-
-//     res.status(200).json({ cart: cartItems });
-//   } catch (error) {
-//     res.status(500).json({ message: "Error geting cartdata" });
-//   }
-// });
 
 router.post("/", async (req, res) => {
   const userId = req.body.id;

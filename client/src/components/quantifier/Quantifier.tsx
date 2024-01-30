@@ -7,14 +7,12 @@ interface QuantifierProps {
   handleQuantityUpdate: (productId: number, operation: Operation) => void;
   productId: number;
   quantity: number;
-  handleRemoveProduct: (productId: number) => void;
 }
 
 const Quantifier = ({
   handleQuantityUpdate,
   productId,
   quantity,
-  handleRemoveProduct,
 }: QuantifierProps) => {
   const [value, setValue] = useState<number>(quantity);
 
@@ -25,14 +23,7 @@ const Quantifier = ({
 
   const reduce = () => {
     handleQuantityUpdate(productId, "decrease");
-
-    setValue((prev) => {
-      const newValue = prev - 1;
-      if (newValue === 0) {
-        handleRemoveProduct(productId);
-      }
-      return newValue;
-    });
+    setValue((prev) => prev - 1);
   };
 
   return (

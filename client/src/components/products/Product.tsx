@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import CurrecyFormatter from "../currency-formatter/CurrencyFormater";
 import Loader from "../loader/loader";
 import style from "./product.module.scss";
@@ -29,29 +29,25 @@ const Product = () => {
   const [product, setProduct] = useState<ProductType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
-  const { authState } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [cartData, setCartData] = useState<CartProps>();
   const navigate = useNavigate();
 
-  const fetchCart = async () => {
+  const fetchCart = useCallback(async () => {
     try {
       const response = await axios.post(
         "http://localhost:5001/cart",
         {
-          id: authState.user?.id,
+          id: user?.id,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${authState.accesstoken}`,
-          },
-        }
+        { withCredentials: true }
       );
 
       if (response.data) {
         setCartData(response.data);
       }
     } catch (error) {}
-  };
+  }, [user?.id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,10 +72,10 @@ const Product = () => {
   }, []);
 
   useEffect(() => {
-    if (authState.user) {
+    if (user) {
       fetchCart();
     }
-  }, [authState.user]);
+  }, [user, fetchCart]);
 
   if (error) {
     return (
@@ -89,23 +85,15 @@ const Product = () => {
     );
   }
 
-  if (isLoading) {
-    return <Loader />;
-  }
-
   const addToCart = async (product: ProductType) => {
     try {
       const response = await axios.post(
         "http://localhost:5001/cart/add",
         {
-          userId: authState.user?.id,
+          userId: user?.id,
           productId: product.id,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${authState.accesstoken}`,
-          },
-        }
+        { withCredentials: true }
       );
 
       if (response.status === 200 || response.status === 201) {
@@ -129,11 +117,7 @@ const Product = () => {
     try {
       const response = await axios.delete(
         `http://localhost:5001/products/${productId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${authState.accesstoken}`,
-          },
-        }
+        { withCredentials: true }
       );
 
       if (response.status === 200) {
@@ -145,12 +129,16 @@ const Product = () => {
     }
   };
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <>
       <Header />
       <section className={style.productpage}>
-        <h1>Product</h1>
-        {authState.user?.isAdmin && (
+        <h1 data-testid="title">Product</h1>
+        {user?.isAdmin && (
           <button
             className={style.addProductButton}
             onClick={() => navigate("/product/new")}
@@ -173,7 +161,7 @@ const Product = () => {
                 >
                   Add to cart
                 </button>
-                {authState.user?.isAdmin ? (
+                {user?.isAdmin ? (
                   <div className={style.updatediv}>
                     <button
                       className={style.updatebtn}

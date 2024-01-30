@@ -9,7 +9,6 @@ import cartRoute from "./routes/cartRoute";
 import sequelize from "./sequalize";
 import Cart from "./models/Cart";
 import "./models/db";
-import { authenticationToken, isAdmin } from "./middlewere/middlewere";
 
 const app = express();
 
@@ -30,18 +29,6 @@ app.get("/", (req, res) => {
 app.use("/products", productRoute);
 app.use("/users", userRoute);
 app.use("/cart", cartRoute);
-
-app.use("/protected", authenticationToken, isAdmin, (req, res) => {
-  res.status(200).json({ message: "This is proteced route" });
-});
-
-// Product.findAll()
-//   .then((products) => {
-//     console.log("All Products", JSON.stringify(products, null, 2));
-//   })
-//   .catch((error) => {
-//     console.log("Error in find Product", error);
-//   });
 
 const startServer = async () => {
   try {

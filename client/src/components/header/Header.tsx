@@ -1,35 +1,25 @@
 import { Link, useNavigate } from "react-router-dom";
 import CartWidget from "../cart-widget/CartWidget";
 import style from "./header.module.scss";
-import { CartProps } from "../products/Product";
-import useLocalStorageState from "use-local-storage-state";
 import { useContext } from "react";
 import { AuthContext } from "../../hooks/auth-context";
 import axios from "axios";
 
 export const Header = () => {
-  const [cart] = useLocalStorageState<CartProps>("cart", {});
-  const productsCount = Object.keys(cart || {}).length;
   const navigate = useNavigate();
-  const { authState, setAuthState } = useContext(AuthContext);
-  const user = authState.user;
+  const { user, setUser } = useContext(AuthContext);
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        "http://localhost:5001/users/logout",
-        {},
-        { withCredentials: true }
-      );
-      setAuthState({
-        accesstoken: null,
-        user: null,
+      await axios.get("http://localhost:5001/users/logout", {
+        withCredentials: true,
       });
-      // no if refresh token
+      setUser(null);
       sessionStorage.removeItem("accessToken");
       sessionStorage.removeItem("user");
 
       navigate("/");
+      navigate(0);
     } catch (error) {
       console.log("Error on logout", error);
     }
@@ -50,7 +40,7 @@ export const Header = () => {
           </div>
         ) : (
           <div className={style.headerbtn2}>
-            <CartWidget productsCount={productsCount} />
+            <CartWidget />
             <button onClick={handleLogout}>Logout</button>
           </div>
         )}

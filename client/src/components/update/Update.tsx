@@ -1,7 +1,6 @@
 import axios from "axios";
-import { ChangeEvent, useContext, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { AuthContext } from "../../hooks/auth-context";
 import style from "./update.module.scss";
 
 const Update = () => {
@@ -13,7 +12,6 @@ const Update = () => {
     thumbnail: "",
   });
   const [isUpdating, setIsUpdating] = useState(false);
-  const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -39,9 +37,7 @@ const Update = () => {
         `http://localhost:5001/products/${updatedProduct.id}`,
         updatedProduct,
         {
-          headers: {
-            Authorization: `Bearer ${authState.accesstoken}`,
-          },
+          withCredentials: true,
         }
       );
 

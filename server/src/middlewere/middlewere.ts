@@ -3,33 +3,26 @@ import { Request, Response, NextFunction } from "express";
 import { UserProps } from "../models/User";
 require("dotenv").config();
 
-interface customRequest extends Request {
+export interface customRequest extends Request {
   user?: UserProps;
 }
 
-const authenticationToken = (
-  req: customRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-  if (token === null)
-    return res.status(401).json({ message: "No token Found" });
+const cookieToken = (req: customRequest, res: Response, next: NextFunction) => {
+  const token = req.cookies["token"];
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "cookie token is missing or invalid" });
+  }
 
-  jwt.verify(token, process.env.SECRET, (err, user) => {
-    if (err) return res.status(401).json({ message: err });
+  jwt.verify(token, process.env.SECRET, (err: any, user: UserProps) => {
+    if (err) {
+      return res.status(403).json({ message: "Invalid or expired token" });
+    }
+
     req.user = user as UserProps;
-    console.log(req.user);
     next();
   });
 };
-const isAdmin = (req: customRequest, res: Response, next: NextFunction) => {
-  console.log(req.user);
-  if (req.user && !req.user.isAdmin) {
-    return res.status(401).json({ message: "User is not admin" });
-  }
-  next();
-};
 
-export { isAdmin, authenticationToken };
+export { cookieToken };

@@ -2,6 +2,7 @@ import express from "express";
 import bcrypt from "bcryptjs";
 import User, { UserProps } from "../models/User";
 import jwt from "jsonwebtoken";
+import { cookieToken, customRequest } from "../middlewere/middlewere";
 require("dotenv").config();
 
 const router = express.Router();
@@ -26,9 +27,6 @@ router.post("/register", async (req, res) => {
     res.status(500).json({ message: "Error on creating the user ", error });
   }
 });
-console.log("============================================");
-
-console.log(process.env.SECRET);
 
 router.post("/login", async (req, res) => {
   try {
@@ -41,18 +39,11 @@ router.post("/login", async (req, res) => {
           expiresIn: "1h",
         }
       );
-      const refreshtoken = jwt.sign(
-        { id: user.id, isAdmin: user.isAdmin },
-        process.env.SECRET,
-        {
-          expiresIn: "100000000",
-        }
-      );
-      res.cookie("refreshtoken", refreshtoken, {
+      res.cookie("token", accesstoken, {
         httpOnly: true,
-        sameSite: "lax",
-        maxAge: 7 * 24 * 12 * 60 * 60,
-        path: "/",
+        sameSite: "none",
+        secure: true,
+        maxAge: 7000000000000000,
       });
 
       const safeUser = {
@@ -60,7 +51,7 @@ router.post("/login", async (req, res) => {
         isAdmin: user.isAdmin,
       };
 
-      res.json({ accesstoken, user: safeUser });
+      res.json({ user: safeUser });
     } else {
       res.status(530).json({ message: "Invalid credentials" });
     }
@@ -69,45 +60,37 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// TODO: verify token
-// Do i need it
+router.use(cookieToken);
 
-// router.post("/verify-user", async (req, res) => {
-//   console.log(req.cookies);
-//   try {
-//     const { refreshtoken } = req.cookies;
-//     console.log(refreshtoken);
-
-//     jwt.verify(
-//       refreshtoken,
-//       "Secret",
-//       async (err: Error | null, decode: Object | null) => {
-//         if (err)
-//           return res.status(400).json({ message: "Invalid refreshtoken" });
-
-//         const user = decode as UserProps;
-
-//         const newAccessToken = jwt.sign(
-//           { id: user.id, isAdmin: user.isAdmin },
-//           process.env.ACCESS_TOKEN_SECRET,
-//           { expiresIn: "1h" }
-//         );
-//         res.json({ accesstoken: newAccessToken, user });
-//       }
-//     );
-//   } catch (error) {
-//     res.status(500).json({ message: error });
-//   }
-// });
-
-router.post("/logout", (req, res) => {
-  res.clearCookie("refreshtoken", {
+router.get("/logout", (req, res) => {
+  res.clearCookie("token", {
     httpOnly: true,
     sameSite: "strict",
     path: "/",
   });
 
   res.status(200).send("Sucessfully logged out");
+});
+
+router.get("/user/get", async (req: customRequest, res) => {
+  try {
+    const user = await User.findOne({
+      where: { id: req.user.id },
+      attributes: ["id", "isAdmin"],
+    });
+
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching user data" });
+  }
+});
+
+router.get("/verify-user", async (req, res) => {
+  res.send("hello you are verified with cookie");
 });
 
 export default router;

@@ -1,6 +1,6 @@
 import express from "express";
 import Product from "../models/Product";
-import { authenticationToken, isAdmin } from "../middlewere/middlewere";
+import { cookieToken } from "../middlewere/middlewere";
 
 const router = express.Router();
 
@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.use(authenticationToken);
+router.use(cookieToken);
 
 router.post("/", async (req, res) => {
   try {
@@ -83,7 +83,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", authenticationToken, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {

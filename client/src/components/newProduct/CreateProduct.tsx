@@ -1,6 +1,5 @@
-import React, { useState, useContext, ChangeEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import axios from "axios";
-import { AuthContext } from "../../hooks/auth-context";
 import style from "./create-product.module.scss";
 import { useNavigate } from "react-router-dom";
 
@@ -10,7 +9,6 @@ const CreateProduct = () => {
     price: 0,
     thumbnail: "",
   });
-  const { authState } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -27,11 +25,7 @@ const CreateProduct = () => {
       const response = await axios.post(
         "http://localhost:5001/products",
         productData,
-        {
-          headers: {
-            Authorization: `Bearer ${authState.accesstoken}`,
-          },
-        }
+        { withCredentials: true }
       );
 
       if (response.status === 200 || response.status === 201) {

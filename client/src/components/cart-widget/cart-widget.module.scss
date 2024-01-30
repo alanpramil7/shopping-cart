@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  margin: 1rem;
+  padding: 0 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  align-items: center;
+
+  &:hover {
+    border: 1px solid white;
+  }
+
+  .productcount {
+    font-size: 2em;
+    top: 30px;
+    color: orange;
+  }
+}
+
+.cart {
+  height: 3em;
+  padding: 1.5rem .4rem;
+}

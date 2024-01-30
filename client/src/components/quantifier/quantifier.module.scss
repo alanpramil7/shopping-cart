@@ -1,0 +1,39 @@
+.quantifier {
+  display: flex;
+  align-items: center;
+
+  input {
+    order: 1;
+    border: 1px solid #eeeeee;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 10px;
+    height: 30px;
+    outline: none;
+    text-align: center;
+    width: 40px;
+    display: inline-block;
+    resize: vertical;
+    font-size: 12px;
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+
+  input[type='button'] {
+    background-color: #eeeeee;
+    cursor: pointer;
+    border: none;
+    width: 30px;
+    font-weight: bold;
+    font-size: 1.2em;
+    height: 30px;
+    padding: 0;
+
+    &:hover {
+      background-color: #D5D9D9;
+    }
+  }
+}

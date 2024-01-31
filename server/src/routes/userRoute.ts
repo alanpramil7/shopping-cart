@@ -72,7 +72,7 @@ router.get("/logout", (req, res) => {
   res.status(200).send("Sucessfully logged out");
 });
 
-router.get("/user/get", async (req: customRequest, res) => {
+router.get("/get", async (req: customRequest, res) => {
   try {
     const user = await User.findOne({
       where: { id: req.user.id },

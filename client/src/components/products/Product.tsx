@@ -77,14 +77,6 @@ const Product = () => {
     }
   }, [user, fetchCart]);
 
-  if (error) {
-    return (
-      <h3 className={style.error}>
-        Ann error has occured when searching the data. Please check the api.
-      </h3>
-    );
-  }
-
   const addToCart = async (product: ProductType) => {
     try {
       const response = await axios.post(
@@ -129,6 +121,14 @@ const Product = () => {
     }
   };
 
+  if (error) {
+    return (
+      <h3 className={style.error}>
+        Ann error has occured when searching the data. Please check the api.
+      </h3>
+    );
+  }
+
   if (isLoading) {
     return <Loader />;
   }
@@ -157,7 +157,13 @@ const Product = () => {
                 </p>
                 <button
                   disabled={isInCart(product.id)}
-                  onClick={() => addToCart(product)}
+                  onClick={() => {
+                    if (user) {
+                      addToCart(product);
+                    } else {
+                      navigate("/login");
+                    }
+                  }}
                 >
                   Add to cart
                 </button>

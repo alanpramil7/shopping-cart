@@ -26,12 +26,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5001/users/user/get",
-          {
-            withCredentials: true,
-          }
-        );
+        const response = await axios.get("http://localhost:5001/users/get", {
+          withCredentials: true,
+        });
         if (response.data) {
           setUser(response.data);
         }

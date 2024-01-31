@@ -157,13 +157,9 @@ const Product = () => {
                 </p>
                 <button
                   disabled={isInCart(product.id)}
-                  onClick={() => {
-                    if (user) {
-                      addToCart(product);
-                    } else {
-                      navigate("/login");
-                    }
-                  }}
+                  onClick={(event) =>
+                    user ? addToCart(product) : navigate("/login")
+                  }
                 >
                   Add to cart
                 </button>

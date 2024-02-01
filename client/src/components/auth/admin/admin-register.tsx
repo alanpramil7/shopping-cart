@@ -5,8 +5,14 @@ import { useNavigate } from "react-router-dom";
 import style from "./auth.module.scss";
 import { Validator } from "../../../validate";
 
+ export interface FormDataProps {
+  username: string;
+  email: string;
+  password: string;
+}
+
 const AdminRegister = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormDataProps>({
     username: "",
     email: "",
     password: "",

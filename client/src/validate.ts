@@ -1,6 +1,15 @@
-export const Validator = (values: any) => {
-  const errors: any = {};
+import { FormDataProps } from "./components/auth/admin/admin-register";
+
+interface ErrorProps {
+  username?: string;
+  email?: string;
+  password?: string;
+}
+
+export const Validator = (values: FormDataProps) => {
+  const errors: ErrorProps = {};
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
   if (!values.username) {
     errors.username = "Username is required!";
   } else if (values.username.length < 4) {

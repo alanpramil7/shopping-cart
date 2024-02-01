@@ -14,20 +14,7 @@ const UserPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const { user } = useContext(AuthContext);
-  const [cartData, setCartData] = useState<CartProps>();
   const navigate = useNavigate();
-
-  const fetchCart = useCallback(async () => {
-    try {
-      const response = await axios.get("http://localhost:5001/cart", {
-        withCredentials: true,
-      });
-
-      if (response.data) {
-        setCartData(response.data);
-      }
-    } catch (error) {}
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -51,15 +38,9 @@ const UserPage = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (user) {
-      fetchCart();
-    }
-  }, [user, fetchCart]);
-
   const addToCart = async (product: ProductType) => {
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:5001/cart/add",
         {
           userId: user?.id,
@@ -68,13 +49,6 @@ const UserPage = () => {
         { withCredentials: true }
       );
 
-      if (response.status === 200 || response.status === 201) {
-        fetchCart();
-        toast.success("Added to cart");
-      } else {
-        toast.error("Something went wrong");
-        console.error("Error adding product to cart:", error);
-      }
       navigate(0);
     } catch (error) {
       toast.error("Something went wrong");

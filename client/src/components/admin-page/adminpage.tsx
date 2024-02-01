@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../hooks/auth-context";
 import CurrecyFormatter from "../currency-formatter/CurrencyFormater";
 import { ProductType } from "../products/Product";
+import toast from "react-hot-toast";
 
 const AdminPage = () => {
   const [product, setProduct] = useState<ProductType[]>([]);
@@ -46,10 +47,12 @@ const AdminPage = () => {
 
       if (response.status === 200) {
         setProduct(product.filter((item) => item.id !== productId));
+        toast.success("Deleted")
         console.log("Product deleted successfully");
       }
     } catch (error) {
       console.error("Error deleting product:", error);
+      toast.error("Error on deleting")
     }
   };
 

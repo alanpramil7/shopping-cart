@@ -3,7 +3,6 @@ import bcrypt from "bcryptjs";
 import User, { UserProps } from "../models/User";
 import jwt from "jsonwebtoken";
 import { cookieToken, customRequest } from "../middlewere/middlewere";
-require("dotenv").config();
 
 const router = express.Router();
 
@@ -19,16 +18,18 @@ router.post("/register", async (req, res) => {
       username: username,
       password: hashedPassword,
       email: email,
-      // isAdmin,
+      isAdmin,
     });
 
-    res.status(201).json(user);
+    res.status(201).json({ success: true, message: "User registered" });
   } catch (error) {
-    res.status(500).json({ message: "Error on creating the user ", error });
+    res
+      .status(501)
+      .json({ success: false, message: "Error on creating the user " });
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post("/login/user", async (req, res) => {
   try {
     const user = await User.findOne({ where: { email: req.body.email } });
     if (user && (await bcrypt.compare(req.body.password, user.password))) {
@@ -41,22 +42,80 @@ router.post("/login", async (req, res) => {
       );
       res.cookie("token", accesstoken, {
         httpOnly: true,
-        sameSite: "none",
-        secure: true,
         maxAge: 7000000000000000,
       });
 
       const safeUser = {
         id: user.id,
+        username: user.username,
         isAdmin: user.isAdmin,
       };
 
-      res.json({ user: safeUser });
+      if (!safeUser.isAdmin) {
+        res.status(200).json({
+          success: true,
+          message: "Logged in succesfully",
+          data: safeUser,
+        });
+      } else {
+        res
+          .status(401)
+          .json({ success: false, message: "Invalid credentials", data: null });
+      }
     } else {
-      res.status(530).json({ message: "Invalid credentials" });
+      res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials", data: null });
     }
   } catch (error) {
-    res.status(500).json({ message: "Error on logginin" });
+    res
+      .status(500)
+      .json({ success: false, message: "Something went wrong", data: null });
+  }
+});
+
+router.post("/login/admin", async (req, res) => {
+  try {
+    const user = await User.findOne({ where: { email: req.body.email } });
+    if (user && (await bcrypt.compare(req.body.password, user.password))) {
+      const accesstoken = jwt.sign(
+        { id: user.id, isAdmin: user.isAdmin },
+        process.env.SECRET,
+        {
+          expiresIn: "1h",
+        }
+      );
+      res.cookie("token", accesstoken, {
+        httpOnly: true,
+        maxAge: 7000000000000000,
+      });
+
+      const safeUser = {
+        id: user.id,
+        username: user.username,
+        isAdmin: user.isAdmin,
+      };
+
+      if (safeUser.isAdmin) {
+        res.status(200).json({
+          success: true,
+          message: "Logged in succesfully",
+          data: safeUser,
+        });
+      } else {
+        res
+          .status(401)
+          .json({ success: false, message: "Invalid credentials", data: null });
+      }
+    } else {
+      res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials", data: null });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Something went wrong", data: null });
   }
 });
 
@@ -65,8 +124,6 @@ router.use(cookieToken);
 router.get("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "strict",
-    path: "/",
   });
 
   res.status(200).send("Sucessfully logged out");
@@ -76,7 +133,7 @@ router.get("/get", async (req: customRequest, res) => {
   try {
     const user = await User.findOne({
       where: { id: req.user.id },
-      attributes: ["id", "isAdmin"],
+      attributes: ["id", "username", "isAdmin"],
     });
 
     if (user) {
@@ -87,10 +144,6 @@ router.get("/get", async (req: customRequest, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error fetching user data" });
   }
-});
-
-router.get("/verify-user", async (req, res) => {
-  res.send("hello you are verified with cookie");
 });
 
 export default router;

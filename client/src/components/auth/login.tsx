@@ -1,67 +1,21 @@
-import { useContext, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../hooks/auth-context";
 import style from "./auth.module.scss";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const navigate = useNavigate();
-  const { setUser } = useContext(AuthContext);
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:5001/users/login",
-        {
-          username,
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-
-      console.log("user", response.data.user);
-
-      const { id, isAdmin } = response.data.user;
-
-      setUser({ id, isAdmin });
-
-      navigate("/");
-    } catch (error) {
-      console.log("Error while Logging :", error);
-    }
-  };
-
   return (
-    <form onSubmit={handleSubmit} className={style.form}>
-      <input
-        type="text"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Username"
-      />
-      <input
-        type="text"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        placeholder="Email"
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        placeholder="Password"
-      />
-      <button type="submit" className={style.formbtn}>
-        Login
-      </button>
-    </form>
+    <div className={style.backdrop}>
+      <div className={style.container}>
+        <h1>Login</h1>
+        <div className={style.buttoncontainer}>
+          <button onClick={() => navigate("/login/admin")}>Admin</button>
+          <button onClick={() => navigate("/login/user")}>User</button>
+        </div>
+        <p onClick={() => navigate("/register")}>
+          Don't have account? Register
+        </p>
+      </div>
+    </div>
   );
 };
 

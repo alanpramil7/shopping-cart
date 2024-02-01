@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { UserProps } from "../models/User";
-require("dotenv").config();
 
 export interface customRequest extends Request {
   user?: UserProps;
@@ -25,4 +24,13 @@ const cookieToken = (req: customRequest, res: Response, next: NextFunction) => {
   });
 };
 
-export { cookieToken };
+const isAdmin = (req: customRequest, res: Response, next: NextFunction) => {
+  const isAdmin = req.user.isAdmin;
+  if (!isAdmin) {
+    return res.status(403).json({ message: "unauthorized" });
+  }
+
+  next();
+};
+
+export { cookieToken, isAdmin };

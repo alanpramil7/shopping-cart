@@ -10,6 +10,7 @@ const Update = () => {
     title: "",
     price: 0,
     thumbnail: "",
+    productQuantity: 0,
   });
   const [isUpdating, setIsUpdating] = useState(false);
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const Update = () => {
       );
 
       if (response.status === 200) {
-        navigate("/");
+        navigate("/admin-page");
       }
     } catch (error) {
       console.error("Error updating product:", error);
@@ -82,6 +83,15 @@ const Update = () => {
               type="text"
               name="thumbnail"
               value={updatedProduct.thumbnail}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div>
+            <label>Product Quantity:</label>
+            <input
+              type="number"
+              name="productQuantity"
+              value={updatedProduct.productQuantity}
               onChange={handleInputChange}
             />
           </div>

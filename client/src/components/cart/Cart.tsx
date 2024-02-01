@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../hooks/auth-context";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const Cart = () => {
   const { user } = useContext(AuthContext);
@@ -19,11 +20,9 @@ const Cart = () => {
       if (!user) return;
 
       try {
-        const cartResponse = await axios.post(
-          "http://localhost:5001/cart",
-          { id: user.id },
-          { withCredentials: true }
-        );
+        const cartResponse = await axios.get("http://localhost:5001/cart", {
+          withCredentials: true,
+        });
         const cart = cartResponse.data;
         setCartData(cart);
 
@@ -69,8 +68,9 @@ const Cart = () => {
       if (response.status === 200) {
         navigate(0);
       }
-      console.log(response.data);
-    } catch (error) {
+      toast.success(response.data.message);
+    } catch (error: any) {
+      toast.error(error.response.data.message);
       console.log("error updating quantity :", error);
     }
   };
@@ -91,7 +91,7 @@ const Cart = () => {
                 <h3>{item.title}</h3>
                 <Quantifier
                   handleQuantityUpdate={handleQuantityUpdate}
-                  productId={item.id}
+                  product={item}
                   quantity={quantity[0].quantity}
                 />
               </div>

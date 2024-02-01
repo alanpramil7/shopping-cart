@@ -1,6 +1,6 @@
 import express from "express";
 import Product from "../models/Product";
-import { cookieToken } from "../middlewere/middlewere";
+import { cookieToken, isAdmin } from "../middlewere/middlewere";
 
 const router = express.Router();
 
@@ -17,12 +17,13 @@ router.get("/", async (req, res) => {
 
 router.use(cookieToken);
 
-router.post("/", async (req, res) => {
+router.post("/", isAdmin, async (req, res) => {
   try {
     const newProduct = await Product.create({
       title: req.body.title,
       price: req.body.price,
       thumbnail: req.body.thumbnail,
+      productQuantity: req.body.productQuantity,
     });
     res.status(201).json(newProduct);
   } catch (error) {
@@ -51,6 +52,7 @@ router.post("/productbyids", async (req, res) => {
       where: {
         id: ids,
       },
+      order: [["id", "ASC"]],
     });
 
     res.status(200).json(productByIds);
@@ -61,7 +63,7 @@ router.post("/productbyids", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { title, price, thumbnail } = req.body;
+  const { title, price, thumbnail, productQuantity } = req.body;
 
   try {
     const product = await Product.findByPk(id);
@@ -74,6 +76,7 @@ router.put("/:id", async (req, res) => {
       title: title || product.title,
       price: price || product.price,
       thumbnail: thumbnail || product.thumbnail,
+      productQuantity: productQuantity || product.productQuantity,
     });
 
     res.status(200).json(updatedProduct);
@@ -83,7 +86,7 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", isAdmin, async (req, res) => {
   const { id } = req.params;
 
   try {

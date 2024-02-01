@@ -1,28 +1,34 @@
 import { useState } from "react";
 import style from "./quantifier.module.scss";
+import { ProductType } from "../products/Product";
 
 export type Operation = "increase" | "decrease";
 
 interface QuantifierProps {
   handleQuantityUpdate: (productId: number, operation: Operation) => void;
-  productId: number;
+  product: ProductType;
   quantity: number;
 }
 
 const Quantifier = ({
   handleQuantityUpdate,
-  productId,
+  product,
   quantity,
 }: QuantifierProps) => {
   const [value, setValue] = useState<number>(quantity);
 
   const increase = () => {
-    handleQuantityUpdate(productId, "increase");
-    setValue((prev) => prev + 1);
+    if (quantity > product.productQuantity) {
+      handleQuantityUpdate(product.id, "increase");
+      setValue((prev) => prev);
+    } else {
+      handleQuantityUpdate(product.id, "increase");
+      setValue((prev) => prev + 1);
+    }
   };
 
   const reduce = () => {
-    handleQuantityUpdate(productId, "decrease");
+    handleQuantityUpdate(product.id, "decrease");
     setValue((prev) => prev - 1);
   };
 

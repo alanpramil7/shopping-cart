@@ -3,12 +3,12 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import Product from "./models/Product";
 import productRoute from "./routes/productRoute";
-import dotenv from "dotenv";
 import userRoute from "./routes/userRoute";
 import cartRoute from "./routes/cartRoute";
 import sequelize from "./sequalize";
 import Cart from "./models/Cart";
 import "./models/db";
+require("dotenv").config();
 
 const app = express();
 

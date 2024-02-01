@@ -28,7 +28,7 @@ export const Header = () => {
   return (
     <header className={style.header}>
       <div>
-        <Link to="/">
+        <Link to={user?.isAdmin ? "/admin-page" : "/user-page"}>
           <img src="/logo.svg" alt="Logo" className={style.logo} />
         </Link>
       </div>
@@ -40,7 +40,10 @@ export const Header = () => {
           </div>
         ) : (
           <div className={style.headerbtn2}>
-            <CartWidget />
+            <p>
+              Hello, <br /> {user?.username}
+            </p>
+            {user.isAdmin ? null : <CartWidget />}
             <button onClick={handleLogout}>Logout</button>
           </div>
         )}

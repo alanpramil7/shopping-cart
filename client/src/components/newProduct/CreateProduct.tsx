@@ -8,6 +8,7 @@ const CreateProduct = () => {
     title: "",
     price: 0,
     thumbnail: "",
+    productQuantity: 0,
   });
   const navigate = useNavigate();
 
@@ -30,7 +31,7 @@ const CreateProduct = () => {
 
       if (response.status === 200 || response.status === 201) {
         console.log("Product added successfully");
-        navigate("/");
+        navigate("/admin-page");
       }
     } catch (error) {
       console.error("Error adding product:", error);
@@ -68,6 +69,16 @@ const CreateProduct = () => {
             type="text"
             name="thumbnail"
             value={productData.thumbnail}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div>
+          <label>Product Quantity:</label>
+          <input
+            required
+            type="number"
+            name="productQuantity"
+            value={productData.productQuantity}
             onChange={handleInputChange}
           />
         </div>

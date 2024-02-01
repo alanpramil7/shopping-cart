@@ -1,36 +1,19 @@
-import { useState, useEffect, useContext } from "react";
-import CurrecyFormatter from "../currency-formatter/CurrencyFormater";
-import Loader from "../loader/loader";
-import style from "./product.module.scss";
 import axios from "axios";
+import { useState, useEffect, useContext } from "react";
+import style from "./adminPage.module.scss";
+import Loader from "../loader/loader";
 import Header from "../header/Header";
-import { AuthContext } from "../../hooks/auth-context";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../../hooks/auth-context";
+import CurrecyFormatter from "../currency-formatter/CurrencyFormater";
+import { ProductType } from "../products/Product";
 
-export type ProductType = {
-  id: number;
-  title: string;
-  price: number;
-  thumbnail: string;
-  image: string;
-  productQuantity: number;
-};
-
-export interface CartProps {
-  [key: string]: {
-    id: number;
-    userId: number;
-    productId: number;
-    quantity: number;
-  };
-}
-
-const Product = () => {
+const AdminPage = () => {
   const [product, setProduct] = useState<ProductType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
-  const { user } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +36,22 @@ const Product = () => {
 
     fetchData();
   }, []);
+
+  const handleDeleteProduct = async (productId: number) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:5001/products/${productId}`,
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        setProduct(product.filter((item) => item.id !== productId));
+        console.log("Product deleted successfully");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
 
   if (error) {
     return (
@@ -79,7 +78,6 @@ const Product = () => {
             Add New Product
           </button>
         )}
-
         <div className={style.container}>
           {product.map((product) => {
             return (
@@ -89,7 +87,22 @@ const Product = () => {
                 <p>
                   <CurrecyFormatter price={product.price} />
                 </p>
-                <button onClick={() => navigate("/login")}>Add to cart</button>
+
+                <p>Quantity: {product.productQuantity}</p>
+                <div className={style.updatediv}>
+                  <button
+                    className={style.updatebtn}
+                    onClick={() => navigate("/update", { state: { product } })}
+                  >
+                    Update
+                  </button>
+                  <button
+                    className={style.updatebtn}
+                    onClick={() => handleDeleteProduct(product.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             );
           })}
@@ -99,4 +112,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default AdminPage;

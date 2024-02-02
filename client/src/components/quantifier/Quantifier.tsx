@@ -1,6 +1,6 @@
-import { useState } from "react";
 import style from "./quantifier.module.scss";
 import { ProductType } from "../products/Product";
+import toast from "react-hot-toast";
 
 export type Operation = "increase" | "decrease";
 
@@ -15,21 +15,26 @@ const Quantifier = ({
   product,
   quantity,
 }: QuantifierProps) => {
-  const [value, setValue] = useState<number>(quantity);
 
   const increase = () => {
-    if (quantity > product.productQuantity) {
+    console.log(
+      "Increase clicked",
+      product.id,
+      "Cart",
+      quantity,
+      "product",
+      product.productQuantity
+    );
+    if (product.productQuantity !== 0) {
       handleQuantityUpdate(product.id, "increase");
-      setValue((prev) => prev);
     } else {
-      handleQuantityUpdate(product.id, "increase");
-      setValue((prev) => prev + 1);
+      toast.error("Out of stock");
     }
   };
 
   const reduce = () => {
+    console.log("Decrease clicked", quantity, product.productQuantity);
     handleQuantityUpdate(product.id, "decrease");
-    setValue((prev) => prev - 1);
   };
 
   return (
@@ -42,11 +47,9 @@ const Quantifier = ({
       />
       <input
         type="number"
-        step="1"
-        max=""
-        value={value}
+        value={quantity}
+        readOnly
         className={style.quantifierfield}
-        onChange={(event) => setValue(parseInt(event.target.value))}
       />
       <input
         type="button"

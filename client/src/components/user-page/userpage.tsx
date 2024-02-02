@@ -14,7 +14,6 @@ const UserPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const { user } = useContext(AuthContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,7 +48,17 @@ const UserPage = () => {
         { withCredentials: true }
       );
 
-      navigate(0);
+      setProduct((pre) => {
+        return pre.map((p) =>
+          p.id === product.id
+            ? {
+                ...p,
+                productQuantity: p.productQuantity - 1,
+              }
+            : p
+        );
+      });
+      toast.success("Added to cart")
     } catch (error) {
       toast.error("Something went wrong");
       console.error("Error adding product to cart:", error);

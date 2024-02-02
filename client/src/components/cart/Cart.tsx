@@ -6,14 +6,12 @@ import Header from "../header/Header";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../hooks/auth-context";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const Cart = () => {
   const { user } = useContext(AuthContext);
   const [cartProduct, setCartProduct] = useState<ProductType[]>([]);
   const [cartData, setCartData] = useState<CartProps>({});
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCartAndProducts = async () => {
@@ -56,6 +54,7 @@ const Cart = () => {
     productId: number,
     operation: Operation
   ) => {
+    console.log("Handle function", productId, operation);
     try {
       const response = await axios.put(
         `http://localhost:5001/cart/${productId}`,
@@ -66,7 +65,26 @@ const Cart = () => {
         { withCredentials: true }
       );
       if (response.status === 200) {
-        navigate(0);
+        const newCartData = { ...cartData };
+        const cartItem = Object.values(newCartData).find(
+          (item) => item.productId === productId
+        );
+        if (cartItem) {
+          if (operation === "increase") {
+            cartItem.quantity += 1;
+          } else if (operation === "decrease" && cartItem.quantity > 0) {
+            cartItem.quantity -= 1;
+          }
+        }
+        setCartData(newCartData);
+
+        setCartProduct((prevProducts) =>
+          prevProducts.map((product) =>
+            product.id === productId
+              ? { ...product, productQuantity: product.productQuantity - 1 }
+              : product
+          )
+        );
       }
       toast.success(response.data.message);
     } catch (error: any) {
@@ -75,28 +93,38 @@ const Cart = () => {
     }
   };
 
+  console.log("CARTPRODUCT", cartProduct);
+  console.log("CARTDATA", cartData);
+
   return (
     <>
       <Header />
       <section className={style.cart}>
         <h1>Cart</h1>
         <div className={style.container}>
-          {cartProduct.map((item) => {
-            const quantity = Object.values(cartData).filter(
-              (cart: any) => cart.productId === item.id
-            );
-            return (
-              <div key={item.id} className={style.product}>
-                <img src={item.thumbnail} alt="Thumbnail" />
-                <h3>{item.title}</h3>
-                <Quantifier
-                  handleQuantityUpdate={handleQuantityUpdate}
-                  product={item}
-                  quantity={quantity[0].quantity}
-                />
-              </div>
-            );
-          })}
+          {cartProduct
+            .filter((item) => {
+              const cartItem = Object.values(cartData).find(
+                (cart) => cart.productId === item.id
+              );
+              return cartItem && cartItem.quantity > 0;
+            })
+            .map((item) => {
+              const cartItem = Object.values(cartData).find(
+                (cart) => cart.productId === item.id
+              );
+              return (
+                <div key={item.id} className={style.product}>
+                  <img src={item.thumbnail} alt="Thumbnail" />
+                  <h3>{item.title}</h3>
+                  <Quantifier
+                    handleQuantityUpdate={handleQuantityUpdate}
+                    product={item}
+                    quantity={cartItem ? cartItem.quantity : 0}
+                  />
+                </div>
+              );
+            })}
         </div>
         <TotalPrice amount={totalPrice} />
       </section>

@@ -4,8 +4,9 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import style from "./auth.module.scss";
 import { Validator } from "../../../validate";
+import PasswordInput from "../../password-input/password-input";
 
- export interface FormDataProps {
+export interface FormDataProps {
   username: string;
   email: string;
   password: string;
@@ -87,12 +88,10 @@ const AdminRegister = () => {
         <p>{formErrors.email}</p>
         <label>
           Password
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
+          <PasswordInput
             onChange={handleInputChange}
-            placeholder="Password"
+            placeholder="password"
+            value={formData.password}
           />
         </label>
         <p>{formErrors.password}</p>

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../hooks/auth-context";
 import style from "./auth.module.scss";
 import toast from "react-hot-toast";
+import PasswordInput from "../../password-input/password-input";
 
 const UserLogin = () => {
   const [email, setEmail] = useState("");
@@ -46,7 +47,7 @@ const UserLogin = () => {
         <label>
           Email
           <input
-            type="email"
+            type="text"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -55,12 +56,10 @@ const UserLogin = () => {
         </label>
         <label>
           Password
-          <input
-            type="password"
-            required
+          <PasswordInput
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
           />
         </label>
         <button type="submit" className={style.formbtn}>

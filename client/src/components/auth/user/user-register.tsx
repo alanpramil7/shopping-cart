@@ -4,6 +4,7 @@ import style from "./auth.module.scss";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import PasswordInput from "../../password-input/password-input";
 
 const UserRegister = () => {
   const [formData, setFormData] = useState({
@@ -81,12 +82,17 @@ const UserRegister = () => {
         <p>{formErrors.email}</p>
         <label>
           Password
-          <input
+          {/* <input
             type="password"
             name="password"
             value={formData.password}
             onChange={handleInputChange}
             placeholder="Password"
+          /> */}
+          <PasswordInput
+            onChange={handleInputChange}
+            placeholder="password"
+            value={formData.password}
           />
         </label>
         <p>{formErrors.password}</p>

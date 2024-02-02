@@ -1,11 +1,11 @@
 import axios from "axios";
-import { useState, useContext, useCallback, useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../hooks/auth-context";
 import CurrecyFormatter from "../currency-formatter/CurrencyFormater";
 import Header from "../header/Header";
 import Loader from "../loader/loader";
-import { ProductType, CartProps } from "../products/Product";
+import { ProductType } from "../products/Product";
 import style from "./userPage.module.scss";
 import toast from "react-hot-toast";
 

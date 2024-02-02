@@ -4,10 +4,6 @@ import Cart, { CartProps } from "../models/Cart";
 import sequelize from "../sequalize";
 import Product from "../models/Product";
 
-interface CartDataProps {
-  [key: number]: CartProps;
-}
-
 const router = express.Router();
 
 router.use(cookieToken);

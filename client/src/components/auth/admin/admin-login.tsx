@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../../hooks/auth-context";
 import style from "./auth.module.scss";
+import PasswordInput from "../../password-input/password-input";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");
@@ -46,7 +47,7 @@ const AdminLogin = () => {
         <label>
           Email
           <input
-            type="email"
+            type="text"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
@@ -54,11 +55,10 @@ const AdminLogin = () => {
         </label>
         <label>
           Password
-          <input
-            type="password"
+          <PasswordInput
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
           />
         </label>
         <button type="submit" className={style.formbtn}>

@@ -9,6 +9,7 @@
   max-width: 400px;
   margin: auto;
   label {
+    position: relative;
     display: flex;
     flex-direction: column;
     font-weight: bold;
@@ -30,6 +31,15 @@
       outline: none;
       border-color: #007bff;
     }
+  }
+
+  .togglePassword {
+    background: none;
+    color: gray;
+    border:none;
+    position: absolute;
+    top: 40px;
+    right: 5px;
   }
 
   .formbtn {

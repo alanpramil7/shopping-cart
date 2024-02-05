@@ -31,7 +31,6 @@ const UserLogin = () => {
       toast.success(response.data.message);
       navigate("/user-page");
     } catch (error: any) {
-      console.group("ERROR:", error);
       if (error.response.data) {
         toast.error(error.response.data.message);
       } else {

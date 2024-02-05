@@ -38,11 +38,11 @@ router.post("/login/user", async (req, res) => {
         process.env.SECRET,
         {
           expiresIn: "1h",
-        }
+        },
       );
       res.cookie("token", accesstoken, {
         httpOnly: true,
-        maxAge: 7000000000000000,
+        maxAge: 7000000,
       });
 
       const safeUser = {
@@ -83,7 +83,7 @@ router.post("/login/admin", async (req, res) => {
         process.env.SECRET,
         {
           expiresIn: "1h",
-        }
+        },
       );
       res.cookie("token", accesstoken, {
         httpOnly: true,

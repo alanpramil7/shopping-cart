@@ -2,6 +2,7 @@ import axios from "axios";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import style from "./update.module.scss";
+import toast from "react-hot-toast";
 
 const Update = () => {
   const location = useLocation();
@@ -47,6 +48,7 @@ const Update = () => {
       }
     } catch (error) {
       console.error("Error updating product:", error);
+      toast.error("Error on updating");
     } finally {
       setIsUpdating(false);
     }

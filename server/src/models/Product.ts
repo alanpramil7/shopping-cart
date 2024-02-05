@@ -28,10 +28,10 @@ Product.init(
     },
     title: DataTypes.STRING,
     price: DataTypes.DECIMAL,
-    thumbnail: DataTypes.TEXT("long"),
+    thumbnail: DataTypes.TEXT,
     productQuantity: DataTypes.INTEGER,
   },
-  { sequelize, modelName: "product" }
+  { sequelize, modelName: "product" },
 );
 
 export default Product;

@@ -54,6 +54,8 @@ const Product = () => {
     fetchData();
   }, []);
 
+  console.log(product);
+
   if (error) {
     return (
       <h3 className={style.error}>
@@ -70,7 +72,7 @@ const Product = () => {
     <>
       <Header />
       <section className={style.productpage}>
-        <h1 data-testid="title">Product</h1>
+        <h1>Product</h1>
         {user?.isAdmin && (
           <button
             className={style.addProductButton}
@@ -83,7 +85,11 @@ const Product = () => {
         <div className={style.container}>
           {product.map((product) => {
             return (
-              <div key={product.id} className={style.product}>
+              <div
+                data-testid="product"
+                key={product.id}
+                className={style.product}
+              >
                 <img src={product.thumbnail} alt="Thumbnail" />
                 <h3>{product.title}</h3>
                 <p>

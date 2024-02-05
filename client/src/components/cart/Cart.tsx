@@ -1,12 +1,12 @@
+import axios from "axios";
+import toast from "react-hot-toast";
+import { useContext, useEffect, useState } from "react";
 import { CartProps, ProductType } from "../products/Product";
 import Quantifier, { Operation } from "../quantifier/Quantifier";
 import TotalPrice from "../total-price/TotalPrice";
 import style from "./cart.module.scss";
 import Header from "../header/Header";
-import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../hooks/auth-context";
-import axios from "axios";
-import toast from "react-hot-toast";
 
 const Cart = () => {
   const { user } = useContext(AuthContext);
@@ -25,18 +25,18 @@ const Cart = () => {
         setCartData(cart);
 
         const productIds = Object.values(cart).map(
-          (item: any) => item.productId
+          (item: any) => item.productId,
         );
         if (productIds.length > 0) {
           const productsResponse = await axios.post(
             "http://localhost:5001/products/productbyids",
             { ids: productIds },
-            { withCredentials: true }
+            { withCredentials: true },
           );
           setCartProduct(productsResponse.data);
         }
       } catch (error) {
-        console.error("Error fetching cart or products:", error);
+        console.error("No products to show:", error);
       }
     };
 
@@ -52,7 +52,7 @@ const Cart = () => {
 
   const handleQuantityUpdate = async (
     productId: number,
-    operation: Operation
+    operation: Operation,
   ) => {
     console.log("Handle function", productId, operation);
     try {
@@ -62,12 +62,12 @@ const Cart = () => {
           operation,
           id: user?.id,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
       if (response.status === 200) {
         const newCartData = { ...cartData };
         const cartItem = Object.values(newCartData).find(
-          (item) => item.productId === productId
+          (item) => item.productId === productId,
         );
         if (cartItem) {
           if (operation === "increase") {
@@ -82,8 +82,8 @@ const Cart = () => {
           prevProducts.map((product) =>
             product.id === productId
               ? { ...product, productQuantity: product.productQuantity - 1 }
-              : product
-          )
+              : product,
+          ),
         );
       }
       toast.success(response.data.message);
@@ -92,9 +92,6 @@ const Cart = () => {
       console.log("error updating quantity :", error);
     }
   };
-
-  console.log("CARTPRODUCT", cartProduct);
-  console.log("CARTDATA", cartData);
 
   return (
     <>
@@ -105,13 +102,13 @@ const Cart = () => {
           {cartProduct
             .filter((item) => {
               const cartItem = Object.values(cartData).find(
-                (cart) => cart.productId === item.id
+                (cart) => cart.productId === item.id,
               );
               return cartItem && cartItem.quantity > 0;
             })
             .map((item) => {
               const cartItem = Object.values(cartData).find(
-                (cart) => cart.productId === item.id
+                (cart) => cart.productId === item.id,
               );
               return (
                 <div key={item.id} className={style.product}>

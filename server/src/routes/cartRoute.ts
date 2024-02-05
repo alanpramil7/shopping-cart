@@ -1,5 +1,5 @@
 import express from "express";
-import { cookieToken, customRequest } from "../middlewere/middlewere";
+import { cookieToken, customRequest, isAdmin, isUser } from "../middlewere/middlewere";
 import Cart, { CartProps } from "../models/Cart";
 import sequelize from "../sequalize";
 import Product from "../models/Product";
@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.use(cookieToken);
 
-router.get("/", async (req: customRequest, res) => {
+router.get("/",  async (req: customRequest, res) => {
   const userId = req.user.id;
   try {
     const cartItems = await Cart.findAll({
@@ -23,7 +23,7 @@ router.get("/", async (req: customRequest, res) => {
   }
 });
 
-router.post("/add", async (req, res) => {
+router.post("/add",isUser, async (req, res) => {
   const { userId, productId } = req.body;
   const transaction = await sequelize.transaction();
   try {
@@ -66,7 +66,7 @@ router.post("/add", async (req, res) => {
   }
 });
 
-router.put("/:productId", async (req, res) => {
+router.put("/:productId",  async (req, res) => {
   const { productId } = req.params;
   const operation = req.body.operation;
   const userId = req.body.id;
@@ -91,6 +91,7 @@ router.put("/:productId", async (req, res) => {
       where: { id: productId },
       transaction,
     });
+
 
     if (!product) {
       await transaction.rollback();

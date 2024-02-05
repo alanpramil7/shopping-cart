@@ -13,8 +13,12 @@ import AdminRegister from "./components/auth/admin/admin-register";
 import AdminLogin from "./components/auth/admin/admin-login";
 import AdminPage from "./components/admin-page/adminpage";
 import UserPage from "./components/user-page/userpage";
+import { useContext } from "react";
+import { AuthContext } from "./hooks/auth-context";
 
 function App() {
+  const { user } = useContext(AuthContext);
+  console.log(user);
   return (
     <BrowserRouter>
       <main>

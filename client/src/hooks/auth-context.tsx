@@ -34,7 +34,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
           setUser(response.data);
         }
       } catch (error) {
-        console.log("Session is not active or an error occurred:", error);
         setUser(null);
       }
     };

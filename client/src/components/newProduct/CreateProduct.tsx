@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent } from "react";
 import axios from "axios";
 import style from "./create-product.module.scss";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const CreateProduct = () => {
   const [productData, setProductData] = useState({
@@ -34,6 +35,7 @@ const CreateProduct = () => {
         navigate("/admin-page");
       }
     } catch (error) {
+      toast.error("Error on adding product")
       console.error("Error adding product:", error);
     }
   };

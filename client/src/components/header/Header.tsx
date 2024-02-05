@@ -5,7 +5,7 @@ import { useContext } from "react";
 import { AuthContext } from "../../hooks/auth-context";
 import axios from "axios";
 
-export const Header = () => {
+const Header = () => {
   const navigate = useNavigate();
   const { user, setUser } = useContext(AuthContext);
 
@@ -15,9 +15,6 @@ export const Header = () => {
         withCredentials: true,
       });
       setUser(null);
-      sessionStorage.removeItem("accessToken");
-      sessionStorage.removeItem("user");
-
       navigate("/");
       navigate(0);
     } catch (error) {

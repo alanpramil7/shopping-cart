@@ -19,7 +19,9 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/products");
+        const response = await axios.get("http://localhost:5001/products", {
+          withCredentials: true,
+        });
         if (response.data) {
           const data = response.data;
           setProduct(data);
@@ -47,12 +49,12 @@ const AdminPage = () => {
 
       if (response.status === 200) {
         setProduct(product.filter((item) => item.id !== productId));
-        toast.success("Deleted")
+        toast.success("Deleted");
         console.log("Product deleted successfully");
       }
     } catch (error) {
       console.error("Error deleting product:", error);
-      toast.error("Error on deleting")
+      toast.error("Error on deleting");
     }
   };
 
@@ -66,6 +68,10 @@ const AdminPage = () => {
 
   if (isLoading) {
     return <Loader />;
+  }
+
+  if (!user?.isAdmin) {
+    return <div>user is not admin</div>;
   }
 
   return (

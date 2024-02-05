@@ -45,7 +45,6 @@ router.get("/:id", async (req, res) => {
 
 router.post("/productbyids", async (req, res) => {
   const ids = req.body.ids;
-  console.log(ids);
 
   try {
     const productByIds = await Product.findAll({
@@ -61,7 +60,7 @@ router.post("/productbyids", async (req, res) => {
   }
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", isAdmin, async (req, res) => {
   const { id } = req.params;
   const { title, price, thumbnail, productQuantity } = req.body;
 

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState, useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../hooks/auth-context";
 import CurrecyFormatter from "../currency-formatter/CurrencyFormater";
 import Header from "../header/Header";
@@ -58,7 +57,7 @@ const UserPage = () => {
             : p
         );
       });
-      toast.success("Added to cart")
+      toast.success("Added to cart");
     } catch (error) {
       toast.error("Something went wrong");
       console.error("Error adding product to cart:", error);
@@ -75,6 +74,10 @@ const UserPage = () => {
 
   if (isLoading) {
     return <Loader />;
+  }
+
+  if (user?.isAdmin) {
+    return <div>User is not user</div>;
   }
 
   return (

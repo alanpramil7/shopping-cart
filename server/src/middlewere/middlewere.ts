@@ -33,4 +33,13 @@ const isAdmin = (req: customRequest, res: Response, next: NextFunction) => {
   next();
 };
 
-export { cookieToken, isAdmin };
+const isUser = (req: customRequest, res: Response, next: NextFunction) => {
+  const isAdmin = req.user.isAdmin;
+  if (isAdmin) {
+    return res.status(403).json({ message: "unauthorized" });
+  }
+
+  next();
+};
+
+export { cookieToken, isAdmin , isUser};

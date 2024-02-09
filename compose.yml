@@ -1,27 +1,20 @@
-version: '3'
+version: "3.8"
 services:
   backend:
-    build: ./backend
+    build: ./server
+    ports:
+      - "5001:5001"
+    network_mode: "host"
+    environment:
+      DB_NAME: test
+      DB_USER: postgres
+      DB_PASSWORD: qwert@123
+      DB_HOST: host
+    container_name: server
+  frontend:
+    build: ./client
     ports:
       - "3000:3000"
-    environment:
-      DB_HOST: postgres  
-      DB_NAME: your_db_name
-      DB_USER: your_db_user
-      DB_PASSWORD: your_db_password
     depends_on:
-      - postgres
-  postgres:
-    image: postgres:latest
-    ports:
-      - "5432:5432"  
-    environment:
-      POSTGRES_DB: your_db_name
-      POSTGRES_USER: your_db_user
-      POSTGRES_PASSWORD: your_db_password
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-  frontend:
-
-volumes:
-  postgres-data:
+      - backend
+    container_name: client

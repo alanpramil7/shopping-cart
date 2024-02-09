@@ -4,12 +4,13 @@ services:
     build: ./server
     ports:
       - "5001:5001"
-    network_mode: "host"
+    network_mode: host
     environment:
+      SECRET: Secret
       DB_NAME: test
-      DB_USER: postgres
+      DB_USERNAME: postgres
       DB_PASSWORD: qwert@123
-      DB_HOST: host
+      DB_HOST: localhost
     container_name: server
   frontend:
     build: ./client

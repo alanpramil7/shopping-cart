@@ -1,4 +1,5 @@
-FROM node:14
+# Use a smaller base image
+FROM node:14-alpine
 
 WORKDIR /home/shopping/api
 
@@ -8,4 +9,6 @@ RUN npm install
 
 COPY . .
 
-CMD [ "npm", "run", "dev" ]
+RUN npm run build
+
+CMD ["node", "dist/index.js"]

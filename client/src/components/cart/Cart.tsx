@@ -78,13 +78,13 @@ const Cart = () => {
         }
         setCartData(newCartData);
 
-        setCartProduct((prevProducts) =>
-          prevProducts.map((product) =>
-            product.id === productId
-              ? { ...product, productQuantity: product.productQuantity - 1 }
-              : product,
-          ),
-        );
+        // setCartProduct((prevProducts) =>
+        //   prevProducts.map((product) =>
+        //     product.id === productId
+        //       ? { ...product, productQuantity: product.productQuantity - 1 }
+        //       : product,
+        //   ),
+        // );
       }
       toast.success(response.data.message);
     } catch (error: any) {

@@ -34,13 +34,13 @@ const AdminRegister = () => {
       if (Object.keys(formErrors).length === 0 && submit) {
         try {
           const response = await axios.post(
-            "http://localhost:5001/users/register",
+            `${process.env.REACT_APP_API_URL}/users/register`,
             {
               username: formData.username,
               email: formData.email,
               password: formData.password,
               isAdmin: true,
-            }
+            },
           );
           navigate("/login");
           toast.success(response.data.message);

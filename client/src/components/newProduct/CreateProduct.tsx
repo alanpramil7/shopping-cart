@@ -25,9 +25,9 @@ const CreateProduct = () => {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5001/products",
+        `${process.env.REACT_APP_API_URL}/products`,
         productData,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       if (response.status === 200 || response.status === 201) {
@@ -35,7 +35,7 @@ const CreateProduct = () => {
         navigate("/admin-page");
       }
     } catch (error) {
-      toast.error("Error on adding product")
+      toast.error("Error on adding product");
       console.error("Error adding product:", error);
     }
   };

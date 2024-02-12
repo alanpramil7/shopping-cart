@@ -19,9 +19,12 @@ const AdminPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/products", {
-          withCredentials: true,
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/products`,
+          {
+            withCredentials: true,
+          },
+        );
         if (response.data) {
           const data = response.data;
           setProduct(data);
@@ -43,8 +46,8 @@ const AdminPage = () => {
   const handleDeleteProduct = async (productId: number) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5001/products/${productId}`,
-        { withCredentials: true }
+        `${process.env.REACT_APP_API_URL}/products/${productId}`,
+        { withCredentials: true },
       );
 
       if (response.status === 200) {

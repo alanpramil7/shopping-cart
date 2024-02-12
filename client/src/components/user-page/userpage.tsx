@@ -17,7 +17,9 @@ const UserPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5001/products");
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/products`,
+        );
         if (response.data) {
           const data = response.data;
           setProduct(data);
@@ -39,12 +41,12 @@ const UserPage = () => {
   const addToCart = async (product: ProductType) => {
     try {
       await axios.post(
-        "http://localhost:5001/cart/add",
+        `${process.env.REACT_APP_API_URL}/cart/add`,
         {
           userId: user?.id,
           productId: product.id,
         },
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       setProduct((pre) => {
@@ -54,7 +56,7 @@ const UserPage = () => {
                 ...p,
                 productQuantity: p.productQuantity - 1,
               }
-            : p
+            : p,
         );
       });
       toast.success("Added to cart");

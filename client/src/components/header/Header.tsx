@@ -11,7 +11,7 @@ const Header = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.get("http://localhost:5001/users/logout", {
+      await axios.get(`${process.env.REACT_APP_API_URL}/users/logout`, {
         withCredentials: true,
       });
       setUser(null);

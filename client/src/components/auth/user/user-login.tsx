@@ -16,14 +16,14 @@ const UserLogin = () => {
     event.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:5001/users/login/user",
+        `${process.env.REACT_APP_API_URL}/users/login/user`,
         {
           email,
           password,
         },
         {
           withCredentials: true,
-        }
+        },
       );
 
       const { id, username, isAdmin } = response.data.data;

@@ -10,7 +10,7 @@ const sequelize = new Sequelize(
     dialect: "postgres",
     host: process.env.DB_HOST,
     logging: false,
-  }
+  },
 );
 
 export default sequelize;

@@ -18,9 +18,12 @@ const Cart = () => {
       if (!user) return;
 
       try {
-        const cartResponse = await axios.get("http://localhost:5001/cart", {
-          withCredentials: true,
-        });
+        const cartResponse = await axios.get(
+          `${process.env.REACT_APP_API_URL}/cart`,
+          {
+            withCredentials: true,
+          },
+        );
         const cart = cartResponse.data;
         setCartData(cart);
 
@@ -29,7 +32,7 @@ const Cart = () => {
         );
         if (productIds.length > 0) {
           const productsResponse = await axios.post(
-            "http://localhost:5001/products/productbyids",
+            `${process.env.REACT_APP_API_URL}/products/productbyids`,
             { ids: productIds },
             { withCredentials: true },
           );
@@ -57,7 +60,7 @@ const Cart = () => {
     console.log("Handle function", productId, operation);
     try {
       const response = await axios.put(
-        `http://localhost:5001/cart/${productId}`,
+        `${process.env.REACT_APP_API_URL}/cart/${productId}`,
         {
           operation,
           id: user?.id,

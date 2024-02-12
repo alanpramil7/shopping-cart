@@ -36,11 +36,11 @@ const Update = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5001/products/${updatedProduct.id}`,
+        `${process.env.REACT_APP_API_URL}/products/${updatedProduct.id}`,
         updatedProduct,
         {
           withCredentials: true,
-        }
+        },
       );
 
       if (response.status === 200) {
